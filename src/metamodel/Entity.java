@@ -10,11 +10,23 @@ public class Entity {
     private List<Entity> entities;
     private List<EntityList> entityLists;
 
-    public Entity(String name, List<Attribute> attributes, List<Entity> entities, List<EntityList> entityLists) {
+    public Entity(String name) {
         this.name = name;
         this.attributes = new ArrayList<>();
         this.entities = new ArrayList<>();
         this.entityLists = new ArrayList<>();
+    }
+
+    public void addAttribute(Attribute attribute) {
+        attributes.add(attribute);
+    }
+
+    public void addEntity(Entity entity) {
+        entities.add(entity);
+    }
+
+    public void addEntityList(EntityList entityList) {
+        entityLists.add(entityList);
     }
 
     public String getName() {
@@ -29,23 +41,21 @@ public class Entity {
         return attributes;
     }
 
-    public void setAttributes(List<Attribute> attributes) {
-        this.attributes = attributes;
-    }
-
     public List<Entity> getEntities() {
         return entities;
-    }
-
-    public void setEntities(List<Entity> entities) {
-        this.entities = entities;
     }
 
     public List<EntityList> getEntityLists() {
         return entityLists;
     }
 
-    public void setEntityLists(List<EntityList> entityLists) {
-        this.entityLists = entityLists;
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "name='" + name + '\'' +
+                ", attributes=" + attributes +
+                ", entities=" + entities +
+                ", entityLists=" + entityLists +
+                '}';
     }
 }

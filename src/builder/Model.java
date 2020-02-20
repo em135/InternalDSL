@@ -18,17 +18,17 @@ public class Model {
     }
 
     private void read(){
-        ArrayList<Double> latitudes = new ArrayList<>();
-        ArrayList<Double> longitudes = new ArrayList<>();
-        try (Scanner sc = new Scanner(file)) {
-            //first name,last name,street,city,car1 model,car2 model,car1 year,car2 year
-            columnNames = sc.nextLine().split(",");
-            while (sc.hasNextLine()) {
-                System.out.println(sc.nextLine());
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+//        ArrayList<Double> latitudes = new ArrayList<>();
+//        ArrayList<Double> longitudes = new ArrayList<>();
+//        try (Scanner sc = new Scanner(file)) {
+//            //first name,last name,street,city,car1 model,car2 model,car1 year,car2 year
+//            columnNames = sc.nextLine().split(",");
+//            while (sc.hasNextLine()) {
+//                System.out.println(sc.nextLine());
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
 

@@ -1,36 +1,42 @@
 package builder;
 
 import com.sun.codemodel.internal.JClassAlreadyExistsException;
+import metamodel.Entity;
 
 import java.io.IOException;
 
 public class PersonBuilder extends Builder {
 
-    private Model model;
+    private Entity model;
 
     protected void build() {
         model = load("src/csv files/person.csv").
-                entity("person").
-                    attribute("column name: first name", String.class).
-                    attribute("column name: last name", String.class).
-                    entityList("car").
-                        entity("car").
-                            attribute("column name: model name1", String.class).
-                            attribute("coumn name: year1", int.class).
-                        entity("car").
-                            attribute("column name: model name2", String.class).
-                            attribute("coulmn name: year2", int.class).
+                    entity("person").
+                        attribute("first name", String.class).
+                        attribute("last name", String.class).
+                        entityList("car").
+                            entity("car").
+                                attribute("model name1", String.class).
+                                attribute("year1", int.class).
+                            end().
+                            entity("car").
+                                attribute("model name2", String.class).
+                                attribute("year2", int.class).
+                            end().
+                        end().
+                        entity("address").
+                            attribute("street", String.class).
+                            attribute("city", int.class).
+                        end().
                     end().
-                    entity("address").
-                        attribute("column name: street", String.class).
-                        attribute("colmn name: city", int.class).
-                validate();
+                last();
     }
 
     public void run() throws IOException, JClassAlreadyExistsException {
         build();
-        model.toJson();
-        model.generateCode();
+        System.out.println(model);
+//        model.toJson();
+//        model.generateCode();
     }
 
 }

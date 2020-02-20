@@ -1,13 +1,18 @@
 package metamodel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EntityList {
 
     List<Entity> entities;
 
-    public EntityList(List<Entity> entities) {
-        this.entities = entities;
+    public EntityList() {
+        entities = new ArrayList<>();
+    }
+
+    public void addEntity(Entity entity) {
+        entities.add(entity);
     }
 
     public List<Entity> getEntities() {
@@ -16,5 +21,12 @@ public class EntityList {
 
     public void setEntities(List<Entity> entities) {
         this.entities = entities;
+    }
+
+    @Override
+    public String toString() {
+        return "EntityList{" +
+                "entities=" + entities +
+                '}';
     }
 }

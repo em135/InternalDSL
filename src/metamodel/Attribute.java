@@ -25,4 +25,12 @@ public class Attribute {
     public void setType(Object type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "Attribute{" +
+                "columnName='" + columnName + '\'' +
+                ", type=" + type +
+                '}';
+    }
 }
