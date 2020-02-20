@@ -29,7 +29,7 @@ public class PersonBuilder extends Builder {
                             attribute("city", int.class).
                         end().
                     end().
-                last();
+                init();
     }
 
     public void run() throws IOException, JClassAlreadyExistsException {

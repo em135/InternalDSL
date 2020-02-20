@@ -68,7 +68,7 @@ public abstract class Builder {
         return this;
     }
 
-    public Entity last(){
+    public Entity init(){
         return (Entity) entities.firstElement();
     }
 
