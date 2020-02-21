@@ -1,5 +1,6 @@
 package builder;
 
+import executor.Model;
 import metamodel.Attribute;
 import metamodel.Entity;
 import metamodel.EntityList;
@@ -10,15 +11,6 @@ import java.util.Stack;
 public abstract class Builder {
 
     private File file;
-
-    private int index;
-
-
-    private EntityList currentEntityList;
-
-    //private Stack<Entity> entities = new Stack<>();
-    // private Stack<EntityList> entityLists = new Stack<>();
-
     private Stack<Object> entities = new Stack<>();
 
     // TODO handle error better
@@ -29,10 +21,7 @@ public abstract class Builder {
 
     public Builder entity(String type) {
         Entity entity = new Entity(type);
-
-
         entities.add(entity);
-        //currentType = entity;
         return this;
     }
 
@@ -44,7 +33,6 @@ public abstract class Builder {
     public Builder entityList(String type) {
         EntityList entityList = new EntityList();
         entities.add(entityList);
-        //currentType = entityList;
         return this;
     }
 
@@ -68,12 +56,8 @@ public abstract class Builder {
         return this;
     }
 
-    public Entity init(){
-        return (Entity) entities.firstElement();
-    }
-
-    public Model validate() {
-        return new Model(file);
+    public Model init(){
+        return new Model((Entity) entities.firstElement(), file);
     }
 
     protected abstract void build();

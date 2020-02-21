@@ -1,6 +1,7 @@
-package builder;
+package executor;
 
 import com.sun.codemodel.internal.*;
+import metamodel.Entity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,27 +9,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Model {
+public class Executor {
 
-    private File file;
+    private Model model;
     private String[] columnNames;
 
-    public Model(File file) {
-        this.file = file;
+    public Executor(Model model) {
+        this.model = model;
+
     }
 
     private void read(){
-//        ArrayList<Double> latitudes = new ArrayList<>();
-//        ArrayList<Double> longitudes = new ArrayList<>();
-//        try (Scanner sc = new Scanner(file)) {
-//            //first name,last name,street,city,car1 model,car2 model,car1 year,car2 year
-//            columnNames = sc.nextLine().split(",");
-//            while (sc.hasNextLine()) {
-//                System.out.println(sc.nextLine());
-//            }
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
+        File file = model.getFile();
+        try (Scanner sc = new Scanner(file)) {
+            //first name,last name,car1 model,car1 year,car2 model,car2 year,engine name,engine type,good oil,bad oil,fine oil,street,city
+            columnNames = sc.nextLine().split(",");
+
+            while (sc.hasNextLine()) {
+                System.out.println(sc.nextLine());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -40,7 +42,6 @@ public class Model {
 
     // https://stackoverflow.com/questions/121324/a-java-api-to-generate-java-source-files
     // https://sookocheff.com/post/java/generating-java-with-jcodemodel/
-
     public void generateCode() throws JClassAlreadyExistsException, IOException {
 //        JCodeModel codeModel = new JCodeModel();
 //        JDefinedClass definedClass = codeModel._class("foo.Bar");

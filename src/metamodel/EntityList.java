@@ -5,7 +5,7 @@ import java.util.List;
 
 public class EntityList {
 
-    List<Entity> entities;
+    private List<Entity> entities;
 
     public EntityList() {
         entities = new ArrayList<>();
