@@ -1,54 +1,126 @@
 package executor;
 
-import com.sun.codemodel.internal.*;
+import metamodel.Attribute;
 import metamodel.Entity;
+import metamodel.EntityList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Executor {
 
+    private Map<String, ArrayList<String>> columnValues = new HashMap<>();
+    private StringBuilder json = new StringBuilder();
     private Model model;
-    private String[] columnNames;
+    private int currentRow;
+    private int rowCount;
 
     public Executor(Model model) {
         this.model = model;
-
     }
 
-    private void read(){
-        File file = model.getFile();
-        try (Scanner sc = new Scanner(file)) {
-            //first name,last name,car1 model,car1 year,car2 model,car2 year,engine name,engine type,good oil,bad oil,fine oil,street,city
-            columnNames = sc.nextLine().split(",");
+    public void toJson() {
+        readCSV();
+        for (currentRow = 0; currentRow < rowCount; currentRow++) {
+            interpretEntity(model.getEntity());
+            if (json.lastIndexOf(",") == json.length() - 2) {
+                json.setCharAt(json.length() - 2, ' ');
 
-            while (sc.hasNextLine()) {
-                System.out.println(sc.nextLine());
             }
+
+        }
+        System.out.println(json);
+    }
+
+    public void readCSV() {
+        File file = model.getFile();
+
+        try (Scanner scanner = new Scanner(file)) {
+            String[] columnNames = scanner.nextLine().split(",");
+            for (String columnName : columnNames) {
+                columnValues.put(columnName, new ArrayList<>());
+            }
+            while (scanner.hasNextLine()) {
+                String[] row = scanner.nextLine().split(",");
+                for (int i = 0; i < row.length; i++) {
+                    columnValues.get(columnNames[i]).add(row[i]);
+                }
+
+            }
+            rowCount = columnValues.get(columnNames[0]).size();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-
-    public String toJson() {
-        read();
-        return "";
+    private String getValue(Attribute attribute) {
+        String cellValue = columnValues.get(attribute.getColumnName()).get(currentRow);
+        String attributeJson = "\"" + attribute.getName() + "\":";
+        if (attribute.getType() != String.class) {
+            return attributeJson + cellValue + ",\n";
+        }
+        return attributeJson + "\"" + cellValue + "\",\n";
     }
 
+    private void interpretEntity(Entity entity) {
+        List<Attribute> attributes = entity.getAttributes();
+        List<Entity> entities = entity.getEntities();
+        List<EntityList> entityLists = entity.getEntityLists();
 
-    // https://stackoverflow.com/questions/121324/a-java-api-to-generate-java-source-files
-    // https://sookocheff.com/post/java/generating-java-with-jcodemodel/
-    public void generateCode() throws JClassAlreadyExistsException, IOException {
-//        JCodeModel codeModel = new JCodeModel();
-//        JDefinedClass definedClass = codeModel._class("foo.Bar");
-//        JMethod method = definedClass.method(0, int.class, "foo");
-//        method.body()._return(JExpr.lit(5));
-//        File file = new File("./target/classes");
-//        file.mkdirs();
-//        codeModel.build(file);
+
+        json.append("{\n");
+
+        if (!attributes.isEmpty()) {
+            interpretAttributes(attributes);
+        }
+        if (!entities.isEmpty()) {
+            interpretAttributeEntities(entities);
+        }
+        if (!entityLists.isEmpty()) {
+            interpretEntityLists(entityLists);
+        }
+
+
+        if (json.lastIndexOf(",") == json.length() - 2) {
+            json.setCharAt(json.length() - 2, ' ');
+
+        }
+        json.append("},\n");
+
     }
+
+    private void interpretAttributes(List<Attribute> attributes) {
+        for (Attribute attribute : attributes) {
+            json.append(getValue(attribute));
+        }
+    }
+
+    private void interpretAttributeEntities(List<Entity> entities) {
+        for (Entity e : entities) {
+            json.append("\"" + e.getName() + "\":");
+            interpretEntity(e);
+        }
+    }
+
+    private void interpretEntities(List<Entity> entities) {
+        for (Entity e : entities) {
+            interpretEntity(e);
+        }
+    }
+
+    private void interpretEntityLists(List<EntityList> entityLists) {
+        for (EntityList el : entityLists) {
+            json.append("\"" + el.getType() + "\":" + " [\n");
+            interpretEntities(el.getEntities());
+            json.append("]\n");
+        }
+
+        if (json.lastIndexOf(",") == json.length() - 4) {
+            json.setCharAt(json.length() - 4, ' ');
+
+        }
+    }
+
 }
+
