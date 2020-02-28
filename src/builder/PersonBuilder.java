@@ -1,62 +1,63 @@
 package builder;
 
-import com.sun.codemodel.internal.JClassAlreadyExistsException;
 import executor.Executor;
 import executor.Model;
-import metamodel.Entity;
 
-import java.io.IOException;
-import java.util.Stack;
+import java.io.File;
 
 public class PersonBuilder extends Builder {
 
     private Model model;
 
+    /**
+     * Creates an metamodel instance
+     */
     protected void build() {
-        model = load("src/test_files/person.csv").
-                    entity("person").
-                        attribute("first name", String.class).
-                        attribute("last name", String.class).
+        //first name,last name,car1 model,car1 year,car2 model,car2 year,engine name,engine type,good oil,bad oil,fine oil,street,city
+            model = entity("person").
+                        attribute("firstName", "first name", String.class).
+                        attribute("lastName", "last name", String.class).
                         entityList("car").
                             entity("car").
-                                attribute("car model1", String.class).
-                                attribute("car year1", int.class).
+                                attribute("model", "car1 model", String.class).
+                                attribute("year", "car1 year", int.class).
                                 entity("engine").
-                                    attribute("engine name", String.class).
-                                    attribute("engine type", String.class).
+                                    attribute("name", "engine name", String.class).
+                                    attribute("type", "engine type", String.class).
                                     entityList("oil").
                                         entity("oil").
-                                            attribute("good oil", String.class).
+                                            attribute("quality", "good oil", String.class).
                                         end().
                                         entity("oil").
-                                            attribute("bad oil", String.class).
+                                            attribute("quality", "bad oil", String.class).
                                         end().
                                         entity("oil").
-                                            attribute("fine oil", String.class).
+                                            attribute("quality", "fine oil", String.class).
                                         end().
                                     end().
                                 end().
                             end().
                             entity("car").
-                                attribute("car model name2", String.class).
-                                attribute("car year2", int.class).
+                                attribute("model", "car2 model", String.class).
+                                attribute("year", "car2 year", int.class).
                             end().
                         end().
                         entity("address").
-                            attribute("street", String.class).
-                            attribute("city", int.class).
+                            attribute("street", "street", String.class).
+                            attribute("city", "city", String.class).
                         end().
                     end().
                 init();
+
+            // Use two csv files with the same columns with the same model
+            model.setFile(new File("src/test_files/dummyDataPerson.csv"));
+//            model.load("src/test_files/dummyDataFunPerson.csv");
     }
 
-    public void run() throws IOException, JClassAlreadyExistsException {
+    public void run() {
         build();
-        System.out.println(model.getEntity());
         Executor executor = new Executor(model);
-
-//        executor.toJson();
-//        executor.generateCode();
+        executor.toJson();
     }
 
 }
