@@ -22,14 +22,18 @@ public class Executor {
 
     public void toJson() {
         readCSV();
+        String objectName = model.getEntity().getName();
+        json.append("{").append("\"").append(objectName).append("\":[");
+
         for (currentRow = 0; currentRow < rowCount; currentRow++) {
             interpretEntity(model.getEntity());
-            if (json.lastIndexOf(",") == json.length() - 2) {
-                json.setCharAt(json.length() - 2, ' ');
-
-            }
+            checkForExtraComma();
+            json.append(",");
 
         }
+        checkForExtraComma();
+        json.append("]}");
+
         System.out.println(json);
     }
 
@@ -56,11 +60,12 @@ public class Executor {
 
     private String getValue(Attribute attribute) {
         String cellValue = columnValues.get(attribute.getColumnName()).get(currentRow);
-        String attributeJson = "\"" + attribute.getName() + "\":";
+
+        String attributeJSON = "\"" + attribute.getName() + "\":";
         if (attribute.getType() != String.class) {
-            return attributeJson + cellValue + ",\n";
+            return attributeJSON + cellValue + ",";
         }
-        return attributeJson + "\"" + cellValue + "\",\n";
+        return attributeJSON + "\"" + cellValue + "\",";
     }
 
     private void interpretEntity(Entity entity) {
@@ -68,26 +73,12 @@ public class Executor {
         List<Entity> entities = entity.getEntities();
         List<EntityList> entityLists = entity.getEntityLists();
 
-
-        json.append("{\n");
-
-        if (!attributes.isEmpty()) {
-            interpretAttributes(attributes);
-        }
-        if (!entities.isEmpty()) {
-            interpretAttributeEntities(entities);
-        }
-        if (!entityLists.isEmpty()) {
-            interpretEntityLists(entityLists);
-        }
-
-
-        if (json.lastIndexOf(",") == json.length() - 2) {
-            json.setCharAt(json.length() - 2, ' ');
-
-        }
-        json.append("},\n");
-
+        json.append("{");
+        interpretAttributes(attributes);
+        interpretAttributeEntities(entities);
+        interpretEntityLists(entityLists);
+        checkForExtraComma();
+        json.append("},");
     }
 
     private void interpretAttributes(List<Attribute> attributes) {
@@ -98,12 +89,12 @@ public class Executor {
 
     private void interpretAttributeEntities(List<Entity> entities) {
         for (Entity e : entities) {
-            json.append("\"" + e.getName() + "\":");
+            json.append("\"").append(e.getName()).append("\":");
             interpretEntity(e);
         }
     }
 
-    private void interpretEntities(List<Entity> entities) {
+    private void interpretEntityListEntities(List<Entity> entities) {
         for (Entity e : entities) {
             interpretEntity(e);
         }
@@ -111,14 +102,17 @@ public class Executor {
 
     private void interpretEntityLists(List<EntityList> entityLists) {
         for (EntityList el : entityLists) {
-            json.append("\"" + el.getType() + "\":" + " [\n");
-            interpretEntities(el.getEntities());
-            json.append("]\n");
+            json.append("\"").append(el.getType()).append("\":").append("[");
+            interpretEntityListEntities(el.getEntities());
+            checkForExtraComma();
+            json.append("]");
         }
+    }
 
-        if (json.lastIndexOf(",") == json.length() - 4) {
-            json.setCharAt(json.length() - 4, ' ');
-
+    private void checkForExtraComma() {
+        int index = json.length() - 1;
+        if (json.lastIndexOf(",") == index) {
+            json.replace(index, index + 1, "");
         }
     }
 
