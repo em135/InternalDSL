@@ -9,49 +9,48 @@ import java.util.Stack;
 
 public abstract class Builder {
 
-    private Stack<Object> entities = new Stack<>();
+    private Stack<Object> objects = new Stack<>();
 
     public Builder entity(String type) {
         Entity entity = new Entity(type);
-        entities.add(entity);
+        objects.add(entity);
         return this;
     }
 
     public Builder attribute(String name, String columnName, Object type) {
-        ((Entity) entities.lastElement()).addAttribute(new Attribute(name, columnName, type));
+        ((Entity) objects.lastElement()).addAttribute(new Attribute(name, columnName, type));
         return this;
     }
 
     public Builder entityList(String type) {
         EntityList entityList = new EntityList(type);
-        entities.add(entityList);
+        objects.add(entityList);
         return this;
     }
 
     public Builder end() {
-        if (entities.size() == 1) {
+        if (objects.size() == 1) {
             return this;
         }
 
-        Object entity = entities.pop();
-        Object currentType = entities.peek();
+        Object pop = objects.pop();
+        Object peek = objects.peek();
 
-        if (entity instanceof Entity) {
-            if (currentType instanceof EntityList) {
-                ((EntityList) entities.peek()).addEntity((Entity) entity);
-            } else if (currentType instanceof Entity) {
-                ((Entity) entities.peek()).addEntity((Entity) entity);
+        if (pop instanceof Entity) {
+            if (peek instanceof EntityList) {
+                ((EntityList) peek).addEntity((Entity) pop);
+            } else if (peek instanceof Entity) {
+                ((Entity) peek).addEntity((Entity) pop);
             }
-        } else if (entity instanceof EntityList) {
-            ((Entity) entities.peek()).addEntityList((EntityList) entity);
+        } else if (pop instanceof EntityList) {
+            ((Entity) peek).addEntityList((EntityList) pop);
         }
         return this;
     }
 
-    public Model init(){
-        return new Model((Entity) entities.firstElement(), null);
+    public Model init() {
+        return new Model((Entity) objects.firstElement(), null);
     }
 
     protected abstract void build();
-
 }

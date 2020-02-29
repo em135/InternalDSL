@@ -33,10 +33,6 @@ public class Entity {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public List<Attribute> getAttributes() {
         return attributes;
     }
@@ -49,13 +45,4 @@ public class Entity {
         return entityLists;
     }
 
-    @Override
-    public String toString() {
-        return "Entity{" +
-                "name='" + name + '\'' +
-                ", attributes=" + attributes +
-                ", entities=" + entities +
-                ", entityLists=" + entityLists +
-                '}';
-    }
 }

@@ -20,27 +20,8 @@ public class Attribute {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setColumnName(String columnName) {
-        this.columnName = columnName;
-    }
-
     public Object getType() {
         return type;
     }
 
-    public void setType(Object type) {
-        this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return "Attribute{" +
-                "columnName='" + columnName + '\'' +
-                ", type=" + type +
-                '}';
-    }
 }

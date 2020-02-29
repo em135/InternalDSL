@@ -11,44 +11,35 @@ import java.util.*;
 public class Executor {
 
     private Map<String, ArrayList<String>> columnValues = new HashMap<>();
-    private StringBuilder json = new StringBuilder();
-    private Model model;
+    private StringBuilder JSON = new StringBuilder();
     private int currentRow;
     private int rowCount;
 
-    public Executor(Model model) {
-        this.model = model;
-    }
-
-    public void toJson() {
-        readCSV();
+    public void toJSON(Model model) {
+        readCSV(model.getFile());
         String objectName = model.getEntity().getName();
-        json.append("{").append("\"").append(objectName).append("\":[");
+        JSON.append("{").append("\"").append(objectName).append("\":[");
 
         for (currentRow = 0; currentRow < rowCount; currentRow++) {
             interpretEntity(model.getEntity());
-            checkForExtraComma();
-            json.append(",");
-
         }
-        checkForExtraComma();
-        json.append("]}");
 
-        System.out.println(json);
+        checkForExtraComma();
+        JSON.append("]}");
+
+        System.out.println(JSON);
     }
 
-    public void readCSV() {
-        File file = model.getFile();
-
+    public void readCSV(File file) {
         try (Scanner scanner = new Scanner(file)) {
             String[] columnNames = scanner.nextLine().split(",");
             for (String columnName : columnNames) {
                 columnValues.put(columnName, new ArrayList<>());
             }
             while (scanner.hasNextLine()) {
-                String[] row = scanner.nextLine().split(",");
-                for (int i = 0; i < row.length; i++) {
-                    columnValues.get(columnNames[i]).add(row[i]);
+                String[] cells = scanner.nextLine().split(",");
+                for (int i = 0; i < cells.length; i++) {
+                    columnValues.get(columnNames[i]).add(cells[i]);
                 }
 
             }
@@ -73,23 +64,23 @@ public class Executor {
         List<Entity> entities = entity.getEntities();
         List<EntityList> entityLists = entity.getEntityLists();
 
-        json.append("{");
+        JSON.append("{");
         interpretAttributes(attributes);
         interpretAttributeEntities(entities);
         interpretEntityLists(entityLists);
         checkForExtraComma();
-        json.append("},");
+        JSON.append("},");
     }
 
     private void interpretAttributes(List<Attribute> attributes) {
         for (Attribute attribute : attributes) {
-            json.append(getValue(attribute));
+            JSON.append(getValue(attribute));
         }
     }
 
     private void interpretAttributeEntities(List<Entity> entities) {
         for (Entity e : entities) {
-            json.append("\"").append(e.getName()).append("\":");
+            JSON.append("\"").append(e.getName()).append("\":");
             interpretEntity(e);
         }
     }
@@ -102,17 +93,17 @@ public class Executor {
 
     private void interpretEntityLists(List<EntityList> entityLists) {
         for (EntityList el : entityLists) {
-            json.append("\"").append(el.getType()).append("\":").append("[");
+            JSON.append("\"").append(el.getType()).append("\":").append("[");
             interpretEntityListEntities(el.getEntities());
             checkForExtraComma();
-            json.append("]");
+            JSON.append("]");
         }
     }
 
     private void checkForExtraComma() {
-        int index = json.length() - 1;
-        if (json.lastIndexOf(",") == index) {
-            json.replace(index, index + 1, "");
+        int index = JSON.length() - 1;
+        if (JSON.lastIndexOf(",") == index) {
+            JSON.replace(index, index + 1, "");
         }
     }
 

@@ -18,15 +18,12 @@ public class Model {
         return entity;
     }
 
-    public void setEntity(Entity entity) {
-        this.entity = entity;
-    }
-
     public File getFile() {
         return file;
     }
 
-    public void setFile(File file) {
-        this.file = file;
+    public void load(String filepath) {
+        this.file = new File(filepath);
+        new Executor().toJSON(this);
     }
 }
