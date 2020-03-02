@@ -4,6 +4,9 @@ import executor.Model;
 
 public class PersonCarBuilder extends Builder {
 
+    /**
+     * Creates a metamodel instance
+     */
     @Override
     protected void build() {
         Model model =
