@@ -50,8 +50,8 @@ public class PersonPetBuilder extends Builder {
             end().
         init();
 
-        model.load("src/resources/petData1.resources");
-        //model.load("src/resources/petData2.resources");
+        model.load("src/resources/petData1.csv");
+        //model.load("src/resources/petData2.csv");
     }
 
     public static void main(String[] args) {
