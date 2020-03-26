@@ -1,5 +1,5 @@
 # InternalDSL
-This Internal DSL is used to read a CSV file and print the values of it to JSON as a list of objects. These objects are represented as a type constructed by a Builder using Entities, Attributes, and EntityLists. 
+Internal Domain Specific Language (DSL) assignment for the Model-driven Software Development course at 8 semester. This Internal DSL is used to read a CSV file and print the values of it to JSON as a list of objects. These objects are represented as a type constructed by a Builder using Entities, Attributes, and EntityLists. 
 
 * Entities can have Attributes, Entities, and EntityLists.
 * Attributes get their data from a CSV file and support strings and numbers.
